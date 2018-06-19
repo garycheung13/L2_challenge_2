@@ -7,14 +7,15 @@
         })
 
         // configuration
-        const chart = scatterplot()
-            .x(function(d){return +d.x})
-            .y(function(d){return +d.y})
+        const chart = scatterplot().width(950).height(600)
+            .xKey(function(d){return +d.x})
+            .yKey(function(d){return +d.y})
             .data(initialGroup);
 
-        // perform render
+        // attach and perform render
         d3.select("#chart").call(chart);
 
+        // form closure on data to event handler
         document.getElementById("group-select").addEventListener("change", function(e) {
             const newData = d.filter(function(row){
                 return row.group === e.target.value;

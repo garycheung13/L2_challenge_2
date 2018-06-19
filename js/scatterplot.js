@@ -1,39 +1,34 @@
 function scatterplot() {
     // chart size defaults;
-    let height = 600;
+    let height = 550;
     let width = 900;
     let margin = {top: 20, right: 20, bottom: 40, left: 60};
     let axisOffset = 4;
+    let updateData;
 
-    // chart text;
+    // chart text defaults;
     let xAxisLabel = "X Axis";
     let yAxisLabel = "Y Axis";
 
-    // conversion key object to array
+    // conversion x, y key
     let xValue = function(d) {return d[0]};
     let yValue = function(d) {return d[1]};
 
     // interpolation
     let xScale = d3.scaleLinear();
     let yScale = d3.scaleLinear();
-    let xAxis = d3.axisBottom(xScale)
-        .tickSize(0)
-        .tickPadding(8);
-    let yAxis = d3.axisLeft(yScale)
-        .tickSizeInner(-width + margin.left + margin.right)
-        .tickSizeOuter(0)
-        .tickPadding(8);
+    let xAxis = d3.axisBottom(xScale).tickSize(0).tickPadding(8);
+    let yAxis = d3.axisLeft(yScale).tickSizeOuter(0).tickPadding(8);
 
     // chart specific
     let _data = [];
-    let updateData;
 
     function chart(selection) {
         selection.each(function(){
-            // convert array of objects into array of arrays in order to use index accessors
+            // convert from array of objects into array of arrays in order to use index accessors
             // avoids needing property names to get x and y values
             _data = _data.map(function(d, i){
-                return [xValue.call(_data, d, i), yValue.call(_data, d, i)]
+                return [xValue.call(null, d, i), yValue.call(null, d, i)]
             });
 
             xScale
@@ -44,16 +39,19 @@ function scatterplot() {
                 .domain([0, d3.max(_data, function(d){return d[1]}) + axisOffset])
                 .range([height - margin.top - margin.bottom, 0]);
 
+            // update guidelines width before drawing starts
+            yAxis.tickSizeInner(-width + margin.left + margin.right)
 
-            // start chart building/ Using viewbox to make chart responsive
+            // start chart drawing
+            // Using viewbox to make chart responsive
             // must assign at least one size attribute or else most browsers
-            // will implicitly apply width: 100%, height: auto to the svg (making it too big sometimes)
-            let svg = d3.select(this).append("svg")
+            // will implicitly apply width: 100%, height: auto to the svg (too large)
+            const svg = d3.select(this).append("svg")
                 .attr("viewBox", "0,0," + width + "," + height)
                 .attr("perserveAspectRatio", "xMinYmid meet")
                 .style("max-width", width + "px");
 
-            let chartArea = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            const chartArea = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             // create x-axis
             chartArea.append("g")
@@ -90,7 +88,7 @@ function scatterplot() {
                     .style("fill", "#c3d855")
 
             // tooltips
-            var tooltip = svg.append("g")
+            const tooltip = svg.append("g")
                     .attr("class", "tooltip")
                     .style("display", "none");
 
@@ -140,7 +138,7 @@ function scatterplot() {
                 .on("mousemove", function(){
                     // in the format off [x, y]
                     const mousePos = d3.mouse(this);
-                    // offset the position because being directly under the mouse causes thrashing
+                    // offset the position because mouse directly under the mouse causes thrashing
                     tooltip.attr("transform", "translate(" + (mousePos[0] + 65) + "," + (mousePos[1] - 30) + ")");
                 })
 
@@ -148,7 +146,7 @@ function scatterplot() {
                     const hoveredDot = d3.select(this)
                     hoveredDot.attr("stroke", "none");
                     tooltip.style("display", "none");
-                    // or else there are leftover tspans from the last hover
+                    // or else there are leftover tspans from the previous hover
                     tooltip.selectAll("tspan").remove();
                 })
 
@@ -156,7 +154,7 @@ function scatterplot() {
             updateData = function() {
                 // data formatting
                 _data = _data.map(function(d, i){
-                    return [xValue.call(_data, d, i), yValue.call(_data, d, i)]
+                    return [xValue.call(null, d, i), yValue.call(null, d, i)]
                 });
 
                 xScale
@@ -222,14 +220,14 @@ function scatterplot() {
     }
 
     // get/sets the column used for x values
-    chart.x = function(value) {
+    chart.xKey = function(value) {
         if (!arguments.length) return xValue;
         xValue = value;
         return chart;
     }
 
     // get/sets the column used for y values
-    chart.y = function(value) {
+    chart.yKey = function(value) {
         if (!arguments.length) return yValue;
         yValue = value;
         return chart;
