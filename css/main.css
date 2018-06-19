@@ -1,0 +1,62 @@
+.label, .axis text {
+    fill: #3347a0;
+    stroke: none;
+    shape-rendering: crispEdges;
+}
+
+.label, span, select, h2 {
+    color: #3347a0;
+    font-family: "Helvetica", sans-serif;
+    font-weight: 300;
+}
+
+.label {
+    font-size: 12px;
+}
+
+.axis path {
+    stroke: #3347a0;
+}
+
+.y-axis line, .y-axis path {
+    fill: none;
+}
+
+.y-axis .tick line {
+    opacity: 0.2;
+}
+
+.selector {
+    padding: 7.5px 15px 7.5px 10px;
+    width: 130px;
+    border-color: #e3e3e3;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: none;
+    background-image: url("icon.svg");
+    background-size: 10%;
+    background-repeat: no-repeat;
+    background-position: right 10% bottom 50%;
+}
+
+.tooltip-text {
+    font-size: 12px;
+    font-family: sans-serif;
+    font-weight: 500;
+}
+
+.tooltip-label {
+    fill: #c3d855;
+}
+
+.tooltip-value {
+    fill: black;
+}
+
+/* for graph readability on mobile */
+@media screen and (max-width: 991px) {
+    .axis text {
+        font-size: 17px;
+    }
+}
