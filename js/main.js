@@ -23,5 +23,7 @@
 
             chart.data(newData);
         })
+    }).catch(function(){
+        d3.select("#chart").text("Failed to open the csv. Check for CORS issues.")
     })
 })();
